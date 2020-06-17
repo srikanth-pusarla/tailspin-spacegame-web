@@ -1,8 +1,9 @@
 name: Spacegame.Web
 on:
-  path:
-    - .github/workflows/dotnetcore.yml
-  pull_request:
+ push:
+    paths:
+    - '.github/workflows/dotnetcore.yml'
+ pull_request:
     branches: [ master ]
 
 jobs:
