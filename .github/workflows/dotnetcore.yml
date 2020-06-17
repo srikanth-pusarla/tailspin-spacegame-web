@@ -3,6 +3,7 @@ on:
  push:
     paths:
     - '.github/workflows/dotnetcore.yml'
+    - '.github/workflows/**.yml'
  pull_request:
     branches: [ master ]
 
