@@ -1,0 +1,40 @@
+name: Spacegame.Web
+on:
+  push:
+    branches:
+      - master
+      - docker-support
+      - website-fixes
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  BUILD_JOB:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.201
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --configuration Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$GITHUB_WORKSPACE/TestResults/Coverage/      
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@v1.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: space-web
+        path: ./Tailspin.SpaceGame.Web/obj/Release/netcoreapp3.1
